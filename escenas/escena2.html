@@ -10,8 +10,8 @@
   <a-scene>
 
     <a-assets>
-      <img id="lugar2" src="/assets/img360/lugar2.jpg">
-      <img id="estrella" src="/assets/icon/estrella.png">
+      <img id="lugar2" src="../assets/img360/lugar2.jpg">
+      <img id="estrella" src="../assets/icon/estrella.png">
 
       <audio id="ambiente" src="../assets/audio/ambiente.MP3" preload="auto"></audio>
       <audio id="hover" src="../assets/audio/hover.MP3" preload="auto"></audio>
@@ -19,7 +19,7 @@
     </a-assets>
 
     <a-entity id="musicaFondo" 
-      sound="src: #ambiente; autoplay: true; loop: true; volume: 0.5">
+      sound="src: #ambiente; autoplay: false; loop: true; volume: 0.5">
     </a-entity>
 
     <a-sky src="#lugar2"></a-sky>
@@ -57,13 +57,13 @@
 
         <a-text 
           id="textoLugar"
-          value="Apacheta Chucura"
+          value="Segunda Ubicación"
           position="-0.9 0 0.01"
           align="left"
           color="white"
           opacity="0"
           width="2"
-          animation__fadein="property: opacity; from: 0; to: 1; dur: 1000; delay: 00"
+          animation__fadein="property: opacity; from: 0; to: 1; dur: 1000; delay: 500"
           animation__fadeout="property: opacity; from: 1; to: 0; dur: 800; delay: 5000">
         </a-text>
       </a-entity>
@@ -73,19 +73,26 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const scene = document.querySelector("a-scene");
       const portal = document.querySelector("#portal");
       const fondo = document.querySelector("#musicaFondo");
+      const escena = document.querySelector("a-scene");
 
-      // Forzar inicio de audio al interactuar
-      scene.addEventListener("click", () => {
-        if (fondo.components.sound) {
+      // Desbloquear audio tras la primera interacción del usuario
+      const playAudio = () => {
+        if (fondo && fondo.components.sound) {
           fondo.components.sound.playSound();
+          console.log("Audio de ambiente iniciado en Escena 2.");
+          window.removeEventListener('click', playAudio);
+          window.removeEventListener('keydown', playAudio);
         }
-      }, { once: true });
+      };
 
-      // Navegación a escena 3
+      window.addEventListener('click', playAudio);
+      window.addEventListener('keydown', playAudio);
+
+      // Navegación a la siguiente escena
       portal.addEventListener("click", () => {
+        console.log("Navegando a Escena 3...");
         window.location.href = "escena3.html";
       });
     });
