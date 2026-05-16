@@ -1,71 +1,94 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Escena 360 - Apacheta Chucura</title>
+  <title>Escena 360</title>
+
   <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
 </head>
 
 <body>
   <a-scene>
-<a-assets>
-  <img id="lugar1" src="/assets/img360/lugar1.jpg">
-  <img id="estrella" src="/assets/icon/estrella.png">
 
-  <audio id="ambiente" src="/assets/audio/ambiente.mp3"></audio>
-  <audio id="hover" src="/assets/audio/hover.mp3"></audio>
-  <audio id="transicion" src="/assets/audio/transicion.mp3"></audio>
-</a-assets>
+    <!-- PRELOAD -->
+    <a-assets>
+      <img id="lugar1" src="/assets/img360/lugar1.jpg">
+      <img id="estrella" src="/assets/icon/estrella.png">
 
-    <a-entity id="musicaFondo" sound="src: #ambiente; autoplay: false; loop: true; volume: 0.5"></a-entity>
+      <audio id="ambiente" src="/assets/audio/ambiente.mp3"></audio>
+      <audio id="hover" src="/assets/audio/hover.mp3"></audio>
+      <audio id="transicion" src="/assets/audio/transicion.mp3"></audio>
+    </a-assets>
 
+    <a-entity 
+      sound="src: #ambiente; autoplay: true; loop: true; volume: 0.5">
+    </a-entity>
+
+    <!-- SKY -->
     <a-sky src="#lugar1"></a-sky>
 
-    <a-text
+    <!-- TEXTO -->
+    <a-text 
       value="Bienvenido al lugar turistico"
       position="0 2 -3"
       align="center"
       color="white"
       opacity="0"
-      animation__fadein="property: opacity; from: 0; to: 1; dur: 1500; delay: 500"
-      animation__fadeout="property: opacity; from: 1; to: 0; dur: 1500; delay: 7000">
-    </a-text>
+      font="https://cdn.aframe.io/fonts/mozillavr.fnt"
 
-    <a-image
-      id="portal"
+      animation__fadein="property: opacity; from: 0; to: 1; dur: 1500; delay: 500"
+      animation__fadeout="property: opacity; from: 1; to: 0; dur: 1500; delay: 7000"
+    >
+    </a-text>
+    
+
+    <!-- ⭐ ESTRELLA PRINCIPAL -->
+    <a-image id="portal"
       src="#estrella"
       position="0 1 3"
       scale="0.4 0.4 0.4"
       class="clickable"
+
       animation="property: position; dir: alternate; dur: 1200; loop: true; to: 0 1.4 3"
+
       animation__hover="startEvents: mouseenter; property: scale; to: 0.7 0.7 0.7; dur: 300"
       animation__leave="startEvents: mouseleave; property: scale; to: 0.4 0.4 0.4; dur: 300"
-      sound="src: #hover; on: mouseenter; volume: 1">
+
+      event-set__enter="_event: mouseenter; animation.paused: true"
+      event-set__leave="_event: mouseleave; animation.paused: false"
+      
+      sound="src: #hover; on: mouseenter; volume: 1"
+    >
     </a-image>
 
+    <!-- CÁMARA + CURSOR -->
     <a-camera>
-      <a-cursor
+
+      <a-cursor 
         fuse="true"
         fuse-timeout="2000"
-        raycaster="objects: .clickable"
         material="color: white; shader: flat"
         geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02">
       </a-cursor>
 
       <a-entity id="ui-label" position="3 -1.3 -2">
-        <a-plane
+
+        <!-- RECTÁNGULO NEGRO -->
+        <a-plane 
           id="barra"
           width="2"
           height="0.4"
           color="black"
           opacity="0.6"
+
           position="0 0 0"
+
           animation__in="property: position; from: 2 0 0; to: 0 0 0; dur: 800; easing: easeOutQuad"
           animation__out="property: position; to: 2 0 0; dur: 800; easing: easeInQuad; delay: 6000">
         </a-plane>
 
-        <a-text
+        <!-- TEXTO -->
+        <a-text 
           id="textoLugar"
           value="Apacheta Chucura"
           position="-0.9 0 0.01"
@@ -73,49 +96,25 @@
           color="white"
           opacity="0"
           width="2"
-          animation__fadein="property: opacity; from: 0; to: 1; dur: 1000; delay: 500"
+
+          animation__fadein="property: opacity; from: 0; to: 1; dur: 1000; delay: 00"
           animation__fadeout="property: opacity; from: 1; to: 0; dur: 800; delay: 5000">
         </a-text>
+
       </a-entity>
     </a-camera>
+
   </a-scene>
 
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const portal = document.querySelector("#portal");
-      const fondo = document.querySelector("#musicaFondo");
-      const escena = document.querySelector("a-scene");
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const portal = document.querySelector("#portal");
 
-      function iniciarAudio() {
-        if (!fondo || !fondo.components || !fondo.components.sound) return;
-
-        fondo.components.sound.playSound();
-        console.log("Audio de ambiente iniciado.");
-
-        window.removeEventListener("mousedown", iniciarAudio);
-        window.removeEventListener("keydown", iniciarAudio);
-        window.removeEventListener("touchstart", iniciarAudio);
-      }
-
-      window.addEventListener("mousedown", iniciarAudio, { once: true });
-      window.addEventListener("keydown", iniciarAudio, { once: true });
-      window.addEventListener("touchstart", iniciarAudio, { once: true });
-
-      portal.addEventListener("click", () => {
-        const transicion = document.querySelector("#transicion");
-        if (transicion) {
-          transicion.play();
-        }
-
-        setTimeout(() => {
+        portal.addEventListener("click", () => {
           window.location.href = "escena2.html";
-        }, 300);
+        });
       });
+    </script>
 
-      escena.addEventListener("loaded", () => {
-        console.log("Escena cargada correctamente.");
-      });
-    });
-  </script>
 </body>
 </html>
