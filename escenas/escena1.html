@@ -2,29 +2,27 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Escena 360 - Apacheta Chucura</title>
   <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
 </head>
 
 <body>
   <a-scene>
+    <a-assets timeout="10000">
+      <img id="lugar1" src="../assets/img360/lugar1.jpg" alt="Escena 360">
+      <img id="estrella" src="../assets/icon/estrella.png" alt="Portal">
 
-    <a-assets>
-      <img id="lugar1" src="../assets/img360/lugar1.jpg"> 
-      <img id="estrella" src="../assets/icon/estrella.png"> 
-      
-      <audio id="ambiente" src="../assets/audio/ambiente.MP3" preload="auto"></audio>
-      <audio id="hover" src="../assets/audio/hover.MP3" preload="auto"></audio>
-      <audio id="transicion" src="../assets/audio/transicion.MP3" preload="auto"></audio>
+      <audio id="ambiente" src="../assets/audio/ambiente.mp3" preload="auto"></audio>
+      <audio id="hover" src="../assets/audio/hover.mp3" preload="auto"></audio>
+      <audio id="transicion" src="../assets/audio/transicion.mp3" preload="auto"></audio>
     </a-assets>
 
-    <a-entity id="musicaFondo" 
-      sound="src: #ambiente; autoplay: false; loop: true; volume: 0.5">
-    </a-entity>
+    <a-entity id="musicaFondo" sound="src: #ambiente; autoplay: false; loop: true; volume: 0.5"></a-entity>
 
     <a-sky src="#lugar1"></a-sky>
 
-    <a-text 
+    <a-text
       value="Bienvenido al lugar turistico"
       position="0 2 -3"
       align="center"
@@ -34,7 +32,8 @@
       animation__fadeout="property: opacity; from: 1; to: 0; dur: 1500; delay: 7000">
     </a-text>
 
-    <a-image id="portal"
+    <a-image
+      id="portal"
       src="#estrella"
       position="0 1 3"
       scale="0.4 0.4 0.4"
@@ -46,15 +45,16 @@
     </a-image>
 
     <a-camera>
-      <a-cursor 
+      <a-cursor
         fuse="true"
         fuse-timeout="2000"
+        raycaster="objects: .clickable"
         material="color: white; shader: flat"
         geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.02">
       </a-cursor>
 
       <a-entity id="ui-label" position="3 -1.3 -2">
-        <a-plane 
+        <a-plane
           id="barra"
           width="2"
           height="0.4"
@@ -65,7 +65,7 @@
           animation__out="property: position; to: 2 0 0; dur: 800; easing: easeInQuad; delay: 6000">
         </a-plane>
 
-        <a-text 
+        <a-text
           id="textoLugar"
           value="Apacheta Chucura"
           position="-0.9 0 0.01"
@@ -78,36 +78,44 @@
         </a-text>
       </a-entity>
     </a-camera>
-
   </a-scene>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", () => {
       const portal = document.querySelector("#portal");
       const fondo = document.querySelector("#musicaFondo");
       const escena = document.querySelector("a-scene");
 
-      // Función para desbloquear el audio con cualquier interacción inicial
-      const desbloquearAudio = () => {
-        if (fondo && fondo.components.sound) {
-          fondo.components.sound.playSound();
-          console.log("Audio de ambiente iniciado.");
-          // Una vez activado, quitamos los listeners para no reiniciar el audio cada vez
-          window.removeEventListener('mousedown', desbloquearAudio);
-          window.removeEventListener('keydown', desbloquearAudio);
-        }
-      };
+      function iniciarAudio() {
+        if (!fondo || !fondo.components || !fondo.components.sound) return;
 
-      window.addEventListener('mousedown', desbloquearAudio);
-      window.addEventListener('keydown', desbloquearAudio);
+        fondo.components.sound.playSound();
+        console.log("Audio de ambiente iniciado.");
 
-      // Cambio de escena al hacer clic en el portal
+        window.removeEventListener("mousedown", iniciarAudio);
+        window.removeEventListener("keydown", iniciarAudio);
+        window.removeEventListener("touchstart", iniciarAudio);
+      }
+
+      window.addEventListener("mousedown", iniciarAudio, { once: true });
+      window.addEventListener("keydown", iniciarAudio, { once: true });
+      window.addEventListener("touchstart", iniciarAudio, { once: true });
+
       portal.addEventListener("click", () => {
-        console.log("Cambiando a Escena 2...");
-        window.location.href = "escena2.html";
+        const transicion = document.querySelector("#transicion");
+        if (transicion) {
+          transicion.play();
+        }
+
+        setTimeout(() => {
+          window.location.href = "escena2.html";
+        }, 300);
+      });
+
+      escena.addEventListener("loaded", () => {
+        console.log("Escena cargada correctamente.");
       });
     });
   </script>
-
 </body>
 </html>
