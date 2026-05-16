@@ -8,9 +8,10 @@
 
 <body>
   <a-scene>
+
     <a-assets>
-      <img id="lugar1" src="../assets/img360/lugar1.jpg">
-      <img id="estrella" src="../assets/icon/estrella.png">
+      <img id="lugar1" src="../assets/img360/lugar1.jpg"> 
+      <img id="estrella" src="../assets/icon/estrella.png"> 
       
       <audio id="ambiente" src="../assets/audio/ambiente.MP3" preload="auto"></audio>
       <audio id="hover" src="../assets/audio/hover.MP3" preload="auto"></audio>
@@ -84,23 +85,22 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const portal = document.querySelector("#portal");
-      const musicaFondo = document.querySelector("#musicaFondo");
+      const fondo = document.querySelector("#musicaFondo");
 
-      // Función para iniciar el audio (requiere interacción del usuario por reglas del navegador)
-      const iniciarAudio = () => {
-        if (musicaFondo && musicaFondo.components.sound) {
-          musicaFondo.components.sound.playSound();
-          console.log("Audio de fondo iniciado.");
-          // Removemos los eventos para que no se ejecute más de una vez
-          window.removeEventListener('keydown', iniciarAudio);
-          window.removeEventListener('mousedown', iniciarAudio);
+      // Función para activar audio tras interacción (Requerido por navegadores)
+      const playAudio = () => {
+        if (fondo && fondo.components.sound) {
+          fondo.components.sound.playSound();
+          console.log("Reproduciendo audio...");
+          window.removeEventListener('keydown', playAudio);
+          window.removeEventListener('mousedown', playAudio);
         }
       };
 
-      window.addEventListener('keydown', iniciarAudio);
-      window.addEventListener('mousedown', iniciarAudio);
+      window.addEventListener('keydown', playAudio);
+      window.addEventListener('mousedown', playAudio);
 
-      // Evento de clic en el portal
+      // Cambio de escena
       portal.addEventListener("click", () => {
         window.location.href = "escena2.html";
       });
