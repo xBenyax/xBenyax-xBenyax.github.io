@@ -82,25 +82,29 @@
 
   </a-scene>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const scene = document.querySelector("a-scene");
-      const portal = document.querySelector("#portal");
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const scene = document.querySelector("a-scene");
+    const portal = document.querySelector("#portal");
+
+    const playAudio = () => {
       const fondo = document.querySelector("#musicaFondo");
+      if (fondo && fondo.components.sound) {
+        fondo.components.sound.playSound();
+        console.log("Intentando reproducir audio...");
+        window.removeEventListener('keydown', playAudio);
+        window.removeEventListener('mousedown', playAudio);
+      }
+    };
 
-      // Solución para el bloqueo de Autoplay: Activa el sonido al primer clic
-      scene.addEventListener("click", () => {
-        if (fondo.components.sound) {
-          fondo.components.sound.playSound();
-        }
-      }, { once: true });
+    window.addEventListener('keydown', playAudio);
+    window.addEventListener('mousedown', playAudio);
 
-      // Navegación
-      portal.addEventListener("click", () => {
-        window.location.href = "escena2.html";
-      });
+    portal.addEventListener("click", () => {
+      window.location.href = "escena2.html";
     });
-  </script>
+  });
+</script>
 
 </body>
 </html>
