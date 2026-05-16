@@ -19,7 +19,7 @@
     </a-assets>
 
     <a-entity id="musicaFondo" 
-      sound="src: #ambiente; autoplay: true; loop: true; volume: 0.5">
+      sound="src: #ambiente; autoplay: false; loop: true; volume: 0.5">
     </a-entity>
 
     <a-sky src="#lugar1"></a-sky>
@@ -30,7 +30,6 @@
       align="center"
       color="white"
       opacity="0"
-      font="https://cdn.aframe.io/fonts/mozillavr.fnt"
       animation__fadein="property: opacity; from: 0; to: 1; dur: 1500; delay: 500"
       animation__fadeout="property: opacity; from: 1; to: 0; dur: 1500; delay: 7000">
     </a-text>
@@ -74,7 +73,7 @@
           color="white"
           opacity="0"
           width="2"
-          animation__fadein="property: opacity; from: 0; to: 1; dur: 1000; delay: 00"
+          animation__fadein="property: opacity; from: 0; to: 1; dur: 1000; delay: 500"
           animation__fadeout="property: opacity; from: 1; to: 0; dur: 800; delay: 5000">
         </a-text>
       </a-entity>
@@ -86,22 +85,25 @@
     document.addEventListener("DOMContentLoaded", () => {
       const portal = document.querySelector("#portal");
       const fondo = document.querySelector("#musicaFondo");
+      const escena = document.querySelector("a-scene");
 
-      // Función para activar audio tras interacción (Requerido por navegadores)
-      const playAudio = () => {
+      // Función para desbloquear el audio con cualquier interacción inicial
+      const desbloquearAudio = () => {
         if (fondo && fondo.components.sound) {
           fondo.components.sound.playSound();
-          console.log("Reproduciendo audio...");
-          window.removeEventListener('keydown', playAudio);
-          window.removeEventListener('mousedown', playAudio);
+          console.log("Audio de ambiente iniciado.");
+          // Una vez activado, quitamos los listeners para no reiniciar el audio cada vez
+          window.removeEventListener('mousedown', desbloquearAudio);
+          window.removeEventListener('keydown', desbloquearAudio);
         }
       };
 
-      window.addEventListener('keydown', playAudio);
-      window.addEventListener('mousedown', playAudio);
+      window.addEventListener('mousedown', desbloquearAudio);
+      window.addEventListener('keydown', desbloquearAudio);
 
-      // Cambio de escena
+      // Cambio de escena al hacer clic en el portal
       portal.addEventListener("click", () => {
+        console.log("Cambiando a Escena 2...");
         window.location.href = "escena2.html";
       });
     });
