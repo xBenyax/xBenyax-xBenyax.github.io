@@ -8,12 +8,14 @@
 
 <body>
   <a-scene>
-
-<a-assets>
-  <img id="lugar1" src="../assets/img360/lugar1.jpg"> <img id="estrella" src="../assets/icon/estrella.png"> <audio id="ambiente" src="../assets/audio/ambiente.MP3" preload="auto"></audio>
-  <audio id="hover" src="../assets/audio/hover.MP3" preload="auto"></audio>
-  <audio id="transicion" src="../assets/audio/transicion.MP3" preload="auto"></audio>
-</a-assets>
+    <a-assets>
+      <img id="lugar1" src="../assets/img360/lugar1.jpg">
+      <img id="estrella" src="../assets/icon/estrella.png">
+      
+      <audio id="ambiente" src="../assets/audio/ambiente.MP3" preload="auto"></audio>
+      <audio id="hover" src="../assets/audio/hover.MP3" preload="auto"></audio>
+      <audio id="transicion" src="../assets/audio/transicion.MP3" preload="auto"></audio>
+    </a-assets>
 
     <a-entity id="musicaFondo" 
       sound="src: #ambiente; autoplay: true; loop: true; volume: 0.5">
@@ -79,29 +81,31 @@
 
   </a-scene>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const scene = document.querySelector("a-scene");
-    const portal = document.querySelector("#portal");
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const portal = document.querySelector("#portal");
+      const musicaFondo = document.querySelector("#musicaFondo");
 
-    const playAudio = () => {
-      const fondo = document.querySelector("#musicaFondo");
-      if (fondo && fondo.components.sound) {
-        fondo.components.sound.playSound();
-        console.log("Intentando reproducir audio...");
-        window.removeEventListener('keydown', playAudio);
-        window.removeEventListener('mousedown', playAudio);
-      }
-    };
+      // Función para iniciar el audio (requiere interacción del usuario por reglas del navegador)
+      const iniciarAudio = () => {
+        if (musicaFondo && musicaFondo.components.sound) {
+          musicaFondo.components.sound.playSound();
+          console.log("Audio de fondo iniciado.");
+          // Removemos los eventos para que no se ejecute más de una vez
+          window.removeEventListener('keydown', iniciarAudio);
+          window.removeEventListener('mousedown', iniciarAudio);
+        }
+      };
 
-    window.addEventListener('keydown', playAudio);
-    window.addEventListener('mousedown', playAudio);
+      window.addEventListener('keydown', iniciarAudio);
+      window.addEventListener('mousedown', iniciarAudio);
 
-    portal.addEventListener("click", () => {
-      window.location.href = "escena2.html";
+      // Evento de clic en el portal
+      portal.addEventListener("click", () => {
+        window.location.href = "escena2.html";
+      });
     });
-  });
-</script>
+  </script>
 
 </body>
 </html>
